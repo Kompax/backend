@@ -1,6 +1,7 @@
 <?php
+
 class LoginAction extends Action {
-  public function index() {
+	public function index() {
 		
 		// 配置页面显示内容
 		$this->assign ( 'title', '后台管理系统' );
@@ -23,11 +24,22 @@ class LoginAction extends Action {
 		$user = $user_dao->where ( $condition )->find ();
 		
 		if ($user) {
-			$_SESSION ['user'] = $user;
-			$msg="Succeeded!";
-			$arr=array("msg"=>$msg);
-			$send = json_encode($arr);
-			echo $send;
+            $sid=session_id();
+            if($sid=='') {
+                session_start();
+				$_SESSION ['user'] = $user;
+            
+				$msg="Succeeded!";
+				$arr=array("msg"=>$msg,"uid"=>$uid);
+				$send = json_encode($arr);
+				echo $send;
+            }
+            else{
+                $msg="This user has already loged in!";
+                $arr=array("msg"=>$msg);
+				$send=json_encode($arr);
+				echo $send;
+            }
 		} else {
 			$msg="Email or password is wrong!";
             $arr=array("msg"=>$msg);
